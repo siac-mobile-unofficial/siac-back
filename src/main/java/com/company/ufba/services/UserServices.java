@@ -18,6 +18,7 @@ public class UserServices {
     public List<?> NotesForStudent(Response response){
         try {
             Document doc = Jsoup.connect(urlNotes)
+                    .newRequest()
                     .cookies(response.getCookies())
                     .headers(response.getHeaders())
                     .get();
