@@ -5,11 +5,13 @@ import com.company.ufba.services.AuthorizationServices;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import javax.validation.Valid;
 import java.util.Map;
+
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthorizationController {
 
     @PostMapping("login")
@@ -21,8 +23,4 @@ public class AuthorizationController {
         return ResponseEntity.ok(new AuthorizationServices().login(user));
     }
 
-    @GetMapping("/teste")
-    public String teste(){
-        return "teste";
-    }
 }
