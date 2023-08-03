@@ -28,10 +28,13 @@ public class AuthorizationServices {
                    .data(user.getLoginInfo())
                    .post().connection().response();
            Logger.getLogger("Nova sessão").info("Cookies: "+responseLogin.cookies().values().toString());
+            Thread.sleep(5000);
            return List.of(responseLogin.cookies(),responseLogin.headers());
         } catch (IOException | ValidationException e) {
             Logger.getLogger("Login").info("Login error: " + e.getMessage());
             return null;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
     }
