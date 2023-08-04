@@ -2,6 +2,7 @@ package com.company.ufba.controller;
 
 import com.company.ufba.dto.User;
 import com.company.ufba.services.AuthorizationServices;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,8 @@ public class AuthorizationController {
                                 ,"senha",user.getPassword()
                                 ,"x","43"
                                 ,"y","4"));
-        return ResponseEntity.ok(new AuthorizationServices().login(user));
+        var result = new AuthorizationServices().login(user);
+        return result != null? ResponseEntity.ok(result):ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 }
