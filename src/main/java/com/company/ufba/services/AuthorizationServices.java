@@ -21,20 +21,21 @@ public class AuthorizationServices {
     public List<?> login(User user) {
         try {
 
-           Connection.Response responseData = Jsoup.connect(urlData).get().connection().response();
+           Connection.Response responseData = Jsoup.connect(urlData).execute();
            Connection.Response responseLogin = Jsoup.connect(urlLogin)
                    .newRequest().timeout(5000)
                    .cookies(responseData.cookies())
                    .data(user.getLoginInfo())
-                   .post().connection().response();
+                   .execute().method(Connection.Method.POST);
+                   if (responseLogin.parse().forms().size() >0){
+                       return null;
+                   }
            Logger.getLogger("Nova sessão").info("Cookies: "+responseLogin.cookies().values().toString());
-            Thread.sleep(5000);
+
            return List.of(responseLogin.cookies(),responseLogin.headers());
         } catch (IOException | ValidationException e) {
             Logger.getLogger("Login").info("Login error: " + e.getMessage());
             return null;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
     }
