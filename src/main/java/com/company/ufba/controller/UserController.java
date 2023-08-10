@@ -18,4 +18,8 @@ public class UserController {
     public ResponseEntity<?> findInfoUser(@Valid @RequestBody Response response){
         return ResponseEntity.ok(new UserServices().findUser(response));
     }
+    @PostMapping("/curriculum")
+    public ResponseEntity<?> findCurriculum(@Valid @RequestBody Response response){
+        return  ResponseEntity.ok(new UserServices().findCurriculum(response));
+    }
 }
