@@ -4,34 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class Curriculum {
-    private String period;
+
+    private String semester;
+    private String type;
     private String code;
     private String name;
-    private String hours;
-    private String note;
-    private String status;
-    private String score;
+    private String requirement;
 
-    public Curriculum(List<String> infos) throws IndexOutOfBoundsException{
-        this.period = infos.get(0);
-        this.code = infos.get(1);
-        this.name = infos.get(2);
-        this.hours = infos.get(3);
-        this.note = infos.get(5);
-        this.score = infos.get(6);
-        this.status = infos.get(8);
+    public Curriculum(List<String> data){
+        semester = data.get(0);
+        type = data.get(1);
+        code = data.get(2);
+        name = data.get(3);
+        requirement = data.get(4);
     }
-
-
 }
-  enum Status{AP,RR,TR;
-
-      Status() {
-
-      }
-  }
