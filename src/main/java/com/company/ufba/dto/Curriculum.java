@@ -18,10 +18,15 @@ public class Curriculum {
     private String requirement;
 
     public Curriculum(List<String> data){
-        semester = data.get(0);
-        type = data.get(1);
-        code = data.get(2);
-        name = data.get(3);
-        requirement = data.get(4);
+      try {
+          semester = data.get(0);
+          type = data.get(1);
+          code = data.get(2);
+          name = data.get(3);
+          requirement = data.get(4);
+      }catch (IndexOutOfBoundsException e){
+          requirement = "Nenhum";
+      }
+
     }
 }
