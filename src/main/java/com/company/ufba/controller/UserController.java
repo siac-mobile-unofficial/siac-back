@@ -22,4 +22,8 @@ public class UserController {
     public ResponseEntity<?> findCurriculum(@Valid @RequestBody Response response){
         return  ResponseEntity.ok(new UserServices().findCurriculum(response));
     }
+    @PostMapping("/classroom")
+    public ResponseEntity<?> findClass(@Valid @RequestBody Response response){
+        return ResponseEntity.ok(new UserServices().findClassroom(response));
+    }
 }
