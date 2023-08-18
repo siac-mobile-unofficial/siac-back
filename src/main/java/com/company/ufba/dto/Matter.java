@@ -22,9 +22,9 @@ public class Matter {
         this.code = infos.get(1);
         this.name = infos.get(2);
         this.hours = infos.get(3);
-        this.note = infos.get(5);
-        this.score = infos.get(6);
-        this.status = infos.get(8);
+        this.note = infos.get(4);
+        this.score = infos.get(5);
+        this.status = infos.get(6);
     }
 
 
