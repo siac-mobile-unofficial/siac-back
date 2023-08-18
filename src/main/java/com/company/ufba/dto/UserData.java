@@ -10,10 +10,11 @@ import java.util.Map;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class UserData {
+
     private String register;
     private String name;
     private String couser;
     private String year;
     private String cr;
-
+    private String semester;
 }
