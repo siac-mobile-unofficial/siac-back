@@ -30,7 +30,7 @@ public class AuthorizationServices {
                    if (responseLogin.parse().forms().size() >0){
                        return null;
                    }
-           Logger.getLogger("Nova sessão").info("Cookies: "+responseLogin.cookies().values().toString());
+//           Logger.getLogger("Nova sessão").info("Cookies: "+responseLogin.cookies().values().toString());
 
            return List.of(responseLogin.cookies(),responseLogin.headers());
         } catch (IOException | ValidationException e) {
