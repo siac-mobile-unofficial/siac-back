@@ -5,9 +5,22 @@ import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.HttpCookie;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,6 +33,8 @@ public class UserServices {
     final String urlInfo ="https://siac.ufba.br/SiacWWW/ConsultarComprovanteMatricula.do";
     final String urlCurriculumOB = "https://siac.ufba.br/SiacWWW/ConsultarDisciplinasObrigatorias.do";
     final String getUrlCurriculumOP = "https://siac.ufba.br/SiacWWW/ConsultarDisciplinasOptativas.do";
+    final String urlPDF = "https://siac.ufba.br/SiacWWW/GerarComprovanteMatricula.do";
+    final String local ="PDF/";
     private Document doc;
 
     public List<?> ListOfData(Elements element){
@@ -129,14 +144,40 @@ public class UserServices {
                     .cookies(response.getCookies())
                     .headers(response.getHeaders())
                     .get();
+
             var element = doc.getElementsByClass("simple2").get(0).select("tbody").select("tr");
             element.remove(element.last());
           return (List<Classroom>) ListOfData(element);
         } catch (IOException e) {
-
             return null;
         }
 
     }
 
+    public Resource findPDF(Response response) {
+        String finalLocal = local+response.getCookies().get("JSESSIONID")+ "_file.pdf";
+        response.getHeaders().remove("Connection");
+        response.getHeaders().remove("Transfer-Encoding");
+        try {
+            HttpCookie cookie = new HttpCookie("JSESSIONID",response.getCookies().get("JSESSIONID"));
+            cookie.setPath("/");
+            cookie.setVersion(1);
+            CookieManager CM = new CookieManager();
+            CM.getCookieStore().add(new URI("https://siac.ufba.br/"),cookie);
+            HttpClient client = HttpClient.newBuilder().cookieHandler(CM).build();
+            HttpRequest.Builder request = HttpRequest.newBuilder(new URI(urlPDF));
+            response.getHeaders().forEach(request::setHeader);
+            HttpRequest req = request.build();
+            HttpResponse res = client.send(req, HttpResponse.BodyHandlers.ofFile(Paths.get(finalLocal)));
+        if (res.statusCode() == HttpStatus.REQUEST_TIMEOUT.value()){
+            Files.deleteIfExists(Path.of(finalLocal));
+            Logger.getLogger("DELET").info("DELETADO");
+        };
+        if (res.statusCode() == HttpStatus.OK.value()){return new UrlResource(Path.of(finalLocal).toUri());
+        }
+        }catch (IOException | InterruptedException | URISyntaxException e){
+            Logger.getLogger("PDF").info(e.getMessage());
+        }
+    return null;
+    }
 }
