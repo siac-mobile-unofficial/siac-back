@@ -3,12 +3,13 @@ package com.company.ufba.controller;
 import com.company.ufba.dto.PasswordRecovery;
 import com.company.ufba.dto.User;
 import com.company.ufba.services.AuthorizationServices;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import javax.validation.Valid;
+
 import java.util.Map;
 
 @CrossOrigin(origins = "http://dev.com")

@@ -2,12 +2,12 @@ package com.company.ufba.controller;
 
 import com.company.ufba.dto.Response;
 import com.company.ufba.services.UserServices;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 @CrossOrigin(origins = "http://dev.com")
 @RestController
 @RequestMapping("user")
