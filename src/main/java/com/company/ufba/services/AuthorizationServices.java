@@ -31,7 +31,7 @@ public class AuthorizationServices {
                    .cookies(responseData.cookies())
                    .data(user.getLoginInfo())
                    .execute().method(Connection.Method.POST);
-                   if (responseLogin.parse().forms().isEmpty()){
+                   if (!responseLogin.parse().forms().isEmpty()){
                        return null;
                    }
 //           Logger.getLogger("Nova sessão").info("Cookies: "+responseLogin.cookies().values().toString());
