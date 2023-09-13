@@ -24,7 +24,7 @@ public class AuthorizationController {
                                 ,"x","43"
                                 ,"y","4"));
         var result = new AuthorizationServices().login(user);
-        return result != null? ResponseEntity.ok(result):ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return result != null? ResponseEntity.ok(result):ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(user);
     }
     public ResponseEntity<?> userRecovery(@Valid @RequestBody PasswordRecovery pass){
         return ResponseEntity.ok(new AuthorizationServices().passwordRecovery(pass));
