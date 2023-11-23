@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Objects;
 
 
-@RestController
-@RequestMapping(value = "/auth",produces = MediaType.APPLICATION_JSON_VALUE)
+@Controller
+@RequestMapping(value = "/auth")
 public class AuthorizationController {
 
     @PostMapping("login")
