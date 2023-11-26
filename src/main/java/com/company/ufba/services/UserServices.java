@@ -165,8 +165,6 @@ public class UserServices {
 
     public Resource findPDF(Response response) {
         String finalLocal = local+response.getCookies().get("JSESSIONID")+ "_file.pdf";
-        response.getHeaders().remove("Connection");
-        response.getHeaders().remove("Transfer-Encoding");
         try {
             HttpCookie cookie = new HttpCookie("JSESSIONID",response.getCookies().get("JSESSIONID"));
             cookie.setPath("/");
@@ -194,8 +192,7 @@ public class UserServices {
         return null;
     }
     public Resource findPDFHistory(Response response){
-        response.getHeaders().remove("Connection");
-        response.getHeaders().remove("Transfer-Encoding");
+
         String finalLocal = local+response.getCookies().get("JSESSIONID")+"_file.pdf";
         CookieManager CM = new CookieManager();
         HttpCookie cookie = new HttpCookie("JSESSIONID",response.getCookies().get("JSESSIONID"));
