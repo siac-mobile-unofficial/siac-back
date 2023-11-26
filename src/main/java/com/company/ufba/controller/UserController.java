@@ -57,6 +57,8 @@ public class UserController {
 
     @GetMapping(value = "/history", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<?> findHistory(@CookieValue("JSESSIONID") String cookie) {
-        return ResponseEntity.ok(new UserServices().findPDFHistory(new Response(cookie)));
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition", "attachment; filename=Historico_Matricula.pdf");
+        return ResponseEntity.ok().headers(headers).body(new UserServices().findPDFHistory(new Response(cookie)));
     }
 }
