@@ -1,7 +1,8 @@
 package com.company.ufba.services;
 
 import com.company.ufba.dto.*;
-import org.jsoup.HttpStatusException;
+import com.company.ufba.utils.tools.Delete;
+import com.company.ufba.utils.tools.Roles;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
 import org.jsoup.nodes.Document;
@@ -13,20 +14,23 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.*;
+import java.net.CookieManager;
+import java.net.HttpCookie;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
 @Service
 public class UserServices {
     Logger log = Logger.getLogger("DEV_USER_SERVICES");
@@ -164,7 +168,12 @@ public class UserServices {
     }
 
     public Resource findPDF(Response response) {
-        String finalLocal = local+response.getCookies().get("JSESSIONID")+ "_file.pdf";
+
+         String locale = local+response.getRole().name()+response.getCookies().get("JSESSIONID").split("\\.")[0]
+                 +"_"
+                 + LocalDate.now(ZoneId.systemDefault())
+                 +"_file.pdf";
+
         try {
             HttpCookie cookie = new HttpCookie("JSESSIONID",response.getCookies().get("JSESSIONID"));
             cookie.setPath("/");
@@ -172,16 +181,13 @@ public class UserServices {
             CookieManager CM = new CookieManager();
             CM.getCookieStore().add(new URI("https://siac.ufba.br/"),cookie);
             HttpClient client = HttpClient.newBuilder().cookieHandler(CM).build();
-            HttpRequest.Builder request = HttpRequest.newBuilder(new URI(urlPDF));
+            HttpRequest.Builder request = HttpRequest.newBuilder(new URI(selectPDF(response.getRole())));
             response.getHeaders().forEach(request::setHeader);
             HttpRequest req = request.build();
-            HttpResponse res = client.send(req, HttpResponse.BodyHandlers.ofFile(Paths.get(finalLocal)));
-        if (res.statusCode() == HttpStatus.REQUEST_TIMEOUT.value()){
-            Files.deleteIfExists(Path.of(finalLocal));
-            Logger.getLogger("DELET").info("DELETADO");
-        };
-        if (res.statusCode() == HttpStatus.OK.value()){return new UrlResource(Path.of(finalLocal).toUri());
-        }
+            HttpResponse<Path> res = client.send(req, HttpResponse.BodyHandlers.ofFile(Path.of(locale)));
+        if (res.statusCode() == HttpStatus.OK.value())  return new UrlResource(Path.of(locale).toUri());
+        else new Delete(Path.of(locale));
+
         }catch (IOException | InterruptedException | URISyntaxException e){
             Logger.getLogger("PDF").info(e.getMessage());
         }
@@ -191,30 +197,30 @@ public class UserServices {
 
         return null;
     }
-    public Resource findPDFHistory(Response response){
-
-        String finalLocal = local+response.getCookies().get("JSESSIONID")+"_file.pdf";
-        CookieManager CM = new CookieManager();
-        HttpCookie cookie = new HttpCookie("JSESSIONID",response.getCookies().get("JSESSIONID"));
-        cookie.setPath("/");
-        cookie.setVersion(1);
-        try {
-            CM.getCookieStore().add(new URI(urlSIAC),cookie);
-        HttpClient client = HttpClient.newBuilder().cookieHandler(CM).build();
-        HttpRequest.Builder request = HttpRequest.newBuilder(new URI(urlHistorySchool));
-        response.getHeaders().forEach(request::setHeader);
-        HttpRequest req = request.build();
-        HttpResponse res = client.send(req, HttpResponse.BodyHandlers.ofFile(Path.of(finalLocal)));
-        log.info(String.valueOf(res.statusCode()));
-        if (res.statusCode() == HttpStatus.OK.value()) return new UrlResource(Path.of(finalLocal).toUri());
-        else {
-            Files.deleteIfExists(Path.of(finalLocal));
-            log.info("DELETADO:"+finalLocal);
-        };
-        return null;
-        }catch (URISyntaxException | IOException | InterruptedException e){}
-        return null;
-    }
+//    public Resource findPDFHistory(Response response){
+//
+//        String finalLocal = local+response.getCookies().get("JSESSIONID")+"_file.pdf";
+//        CookieManager CM = new CookieManager();
+//        HttpCookie cookie = new HttpCookie("JSESSIONID",response.getCookies().get("JSESSIONID"));
+//        cookie.setPath("/");
+//        cookie.setVersion(1);
+//        try {
+//            CM.getCookieStore().add(new URI(urlSIAC),cookie);
+//        HttpClient client = HttpClient.newBuilder().cookieHandler(CM).build();
+//        HttpRequest.Builder request = HttpRequest.newBuilder(new URI(urlHistorySchool));
+//        response.getHeaders().forEach(request::setHeader);
+//        HttpRequest req = request.build();
+//        HttpResponse res = client.send(req, HttpResponse.BodyHandlers.ofFile(Path.of(finalLocal)));
+//        log.info(String.valueOf(res.statusCode()));
+//        if (res.statusCode() == HttpStatus.OK.value()) return new UrlResource(Path.of(finalLocal).toUri());
+//        else {
+//            Files.deleteIfExists(Path.of(finalLocal));
+//            log.info("DELETADO:"+finalLocal);
+//        };
+//        return null;
+//        }catch (URISyntaxException | IOException | InterruptedException e){}
+//        return null;
+//    }
     public List<?> findLockRegister(Response response){
         try {
             doc = Jsoup.connect(urlLockRegistration.get("lock"))
@@ -226,5 +232,18 @@ public class UserServices {
             return null;
         }
 
+    }
+    public String selectPDF(Roles role){
+        switch (role){
+            case HISTORICO -> {
+                return urlHistorySchool;
+            }
+            case MATRICULA -> {
+                return urlPDF;
+            }
+            default -> {
+                return null;//adicionar pdf padrão
+            }
+        }
     }
 }
