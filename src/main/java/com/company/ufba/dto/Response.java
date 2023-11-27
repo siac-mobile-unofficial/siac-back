@@ -1,5 +1,6 @@
 package com.company.ufba.dto;
 
+import com.company.ufba.utils.tools.Roles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 public class Response {
+    private Roles role;
     private Map<String, String> cookies;
     private Map<String, String> headers =
             Map.of("Server", "Apache-Coyote/1.1",
@@ -21,6 +23,10 @@ public class Response {
 
     public Response(String cookie) {
         this.cookies = Map.of("JSESSIONID", cookie);
+    }
+    public Response(String cookie,Roles role){
+        this.cookies = Map.of("JSESSIONID", cookie);;
+        this.role = role;
     }
 
 
