@@ -3,6 +3,7 @@ package com.company.ufba.controller;
 import com.company.ufba.dto.Response;
 import com.company.ufba.dto.User;
 import com.company.ufba.services.UserServices;
+import com.company.ufba.utils.tools.Roles;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -42,11 +43,11 @@ public class UserController {
         return ResponseEntity.ok(new UserServices().findClassroom(new Response(cookie)));
     }
 
-    @GetMapping(value = "/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<?> findPDF(@CookieValue("JSESSIONID") String cookie) {
+    @GetMapping(value = "/register", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<?> findRegisterPDF(@CookieValue("JSESSIONID") String cookie) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Disposition", "attachment; filename=Comprovante_Matricula.pdf");
-        return ResponseEntity.ok().headers(headers).body(new UserServices().findPDF(new Response(cookie)));
+        return ResponseEntity.ok().headers(headers).body(new UserServices().findPDF(new Response(cookie,Roles.MATRICULA)));
     }
 
     @GetMapping("/lock")
@@ -56,9 +57,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/history", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<?> findHistory(@CookieValue("JSESSIONID") String cookie) {
+    public ResponseEntity<?> findHistoryPDF(@CookieValue("JSESSIONID") String cookie) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Disposition", "attachment; filename=Historico_Matricula.pdf");
-        return ResponseEntity.ok().headers(headers).body(new UserServices().findPDFHistory(new Response(cookie)));
+        return ResponseEntity.ok().headers(headers).body(new UserServices().findPDF(new Response(cookie, Roles.HISTORICO)));
     }
 }
