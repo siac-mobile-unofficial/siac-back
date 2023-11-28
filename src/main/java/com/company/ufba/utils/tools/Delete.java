@@ -21,9 +21,9 @@ public class Delete extends Thread {
 
     public Delete() {
     }
-
     @Override
     public void run() {
+        currentThread().setName("DELETE");
         while (true) {
             log.info("Clean pdf of system. " + LocalDate.now(ZoneId.systemDefault()));
             try {
