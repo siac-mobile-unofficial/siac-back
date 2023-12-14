@@ -1,0 +1,13 @@
+services:
+  banco:
+    image: mysql
+    cpu_count: 1
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: buzufba
+      MYSQL_USER: ufba
+      MYSQL_PASSWORD: ufba
+    ports:
+      - 3306:3306
+
