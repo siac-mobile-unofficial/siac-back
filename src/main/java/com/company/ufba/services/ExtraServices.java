@@ -21,8 +21,10 @@ public class ExtraServices {
     @Autowired
     BusRepository busRepository;
     public PointEntity point(){
+
         return pointRepository.findById(1).get();}
-    public Set<PointEntity> pointMaxRanger(){ return null;}
+    public Set<PointEntity> pointMaxRanger(Object o){
+        return pointRepository.findAllByLocale_LatitudeIsBetweenAndLocale_LongitudeIsBetween();}
     public RouterEntity router(){
         return routerRepository.findById(1).get();}
     public BusEntity bus(){
