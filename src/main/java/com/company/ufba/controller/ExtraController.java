@@ -1,19 +1,16 @@
 package com.company.ufba.controller;
 
 
-import com.company.ufba.repositories.PointRepository;
+import com.company.ufba.dto.Buzufba;
 import com.company.ufba.services.ExtraServices;
 import com.google.gson.Gson;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.rsocket.annotation.ConnectMapping;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.socket.*;
 
 import java.util.logging.Logger;
+
+
 @Component
 public class ExtraController implements WebSocketHandler {
     Logger log = Logger.getLogger("WEBSOCKET");
@@ -24,15 +21,16 @@ public class ExtraController implements WebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info(session.getId());
-        session.sendMessage(new TextMessage(gson.toJson(services.point())));
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+        Buzufba buzufba = gson.fromJson(message.getPayload().toString(), Buzufba.class);
         //TODO atualizar dados do cliente
-        switch (message.getPayload().toString()) {
-            case "BUS"->{session.sendMessage(new TextMessage(gson.toJson(services.bus())));}
-            case "POINT"->{session.sendMessage(new TextMessage(gson.toJson(services.point())));}
+        switch (buzufba.getType()) {
+            case BUS->{session.sendMessage(new TextMessage(gson.toJson(services.bus())));}
+            case POINT->{session.sendMessage(new TextMessage(gson.toJson(services.pointMaxRanger(buzufba.getInfos()))));}
+            default -> {}
         }
     }
 
