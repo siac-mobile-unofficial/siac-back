@@ -1,21 +1,20 @@
 package com.company.ufba.controller;
 
 import com.company.ufba.dto.Response;
-import com.company.ufba.dto.User;
+import com.company.ufba.repositories.BusRepository;
+
+import com.company.ufba.services.ExtraServices;
 import com.company.ufba.services.UserServices;
 import com.company.ufba.utils.tools.Roles;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("user")
@@ -51,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/lock")
-    public ResponseEntity<?> findLock(@Valid @RequestBody Response response) {
+    public ResponseEntity<?> findLock( @RequestBody Response response) {
         new UserServices().findLockRegister(response);
         return null;
     }
@@ -62,4 +61,12 @@ public class UserController {
         headers.set("Content-Disposition", "attachment; filename=Historico_Matricula.pdf");
         return ResponseEntity.ok().headers(headers).body(new UserServices().findPDF(new Response(cookie, Roles.HISTORICO)));
     }
+
+//    @Autowired
+//    BusRepository bus;
+//    @GetMapping("teste")
+//    public ResponseEntity<?> t(){
+//
+//        return ResponseEntity.ok( bus.findById(Long.parseLong("1")));
+//    }
 }

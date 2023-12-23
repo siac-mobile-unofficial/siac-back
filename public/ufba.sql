@@ -1,7 +1,7 @@
 CREATE TABLE `router` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
-    `direction` ENUM('START','BACk'),
+    `direction` ENUM('START','BACK'),
 	PRIMARY KEY (`id`)
 );
 
@@ -24,8 +24,8 @@ CREATE TABLE `coordinates` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`router` int NOT NULL,
 	`ispoint` BOOLEAN NOT NULL,
-	`latitude` varchar(255) NOT NULL,
-	`longitude` varchar(255) NOT NULL,
+	`latitude` double NOT NULL,
+	`longitude` double NOT NULL,
 	PRIMARY KEY (`id`)
 );
 

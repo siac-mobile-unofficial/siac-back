@@ -9,5 +9,6 @@ import java.util.Set;
 
 @Repository
 public interface PointRepository extends JpaRepository<PointEntity, Integer> {
-    Set<PointEntity> findAllByLocale_LatitudeIsBetweenAndLocale_LongitudeIsBetween(Float latitudeRef, Float latitudeAlgo, Float longitudeRef, Float logintudeAlgo);
+    Set<PointEntity> findAllByLocale_LatitudeBetweenAndLocale_LongitudeBetween(Double latitudeRef, Double latitudeAlgo, Double longitudeRef, Double longitudeAlgo);
+
 }

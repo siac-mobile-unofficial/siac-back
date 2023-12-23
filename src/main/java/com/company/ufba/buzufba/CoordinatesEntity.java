@@ -21,9 +21,9 @@ public class CoordinatesEntity {
     private boolean ispoint;
     @Basic
     @Column(name = "latitude")
-    private Float latitude;
+    private Double latitude;
     @Basic
     @Column(name = "longitude")
-    private Float longitude;
+    private Double longitude;
 
    }

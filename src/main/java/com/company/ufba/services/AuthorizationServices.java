@@ -50,7 +50,8 @@ public class AuthorizationServices {
 
             if (!doc.getElementsByClass("alertbox-white").isEmpty()) {
                 result = doc.getElementsByClass("alertbox-white").first().text();
-                pass.setStatus(result);
+                pass
+                        .setStatus(result);
                 return pass;
             }
 

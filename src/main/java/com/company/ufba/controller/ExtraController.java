@@ -25,11 +25,13 @@ public class ExtraController implements WebSocketHandler {
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+
         Buzufba buzufba = gson.fromJson(message.getPayload().toString(), Buzufba.class);
+        System.out.println(buzufba.toString());
         //TODO atualizar dados do cliente
         switch (buzufba.getType()) {
             case BUS->{session.sendMessage(new TextMessage(gson.toJson(services.bus())));}
-            case POINT->{session.sendMessage(new TextMessage(gson.toJson(services.pointMaxRanger(buzufba.getInfos()))));}
+            case POINT->{session.sendMessage(new TextMessage(gson.toJson(services.pointMaxRanger(buzufba))));}
             default -> {}
         }
     }

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication()
-@ComponentScan(basePackages = {"com.company.ufba.*"})
+//@ComponentScan(basePackages = {"com.company.ufba.*"})
 @EnableTransactionManagement
 public class UfbaApplication {
 	public static void main(String[] args)  {

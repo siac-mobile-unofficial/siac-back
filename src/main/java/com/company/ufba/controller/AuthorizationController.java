@@ -4,7 +4,6 @@ import com.company.ufba.dto.PasswordRecovery;
 import com.company.ufba.dto.User;
 import com.company.ufba.services.AuthorizationServices;
 import com.company.ufba.utils.Exception.custom.LoginException;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,7 @@ import java.util.Map;
 public class AuthorizationController {
 
     @PostMapping("login")
-    public ResponseEntity<?> userLogin( @Valid @RequestBody User user)  {
+    public ResponseEntity<?> userLogin(  @RequestBody User user)  {
 
         user.setLoginInfo(Map.of("cpf", user.getRegister()
                                 ,"senha",user.getPassword()
@@ -30,7 +29,7 @@ public class AuthorizationController {
         return ResponseEntity.ok().headers(headers).build();
     }
     @PostMapping("password")
-    public ResponseEntity<?> userRecovery(@Valid @RequestBody PasswordRecovery pass){
+    public ResponseEntity<?> userRecovery( @RequestBody PasswordRecovery pass){
         PasswordRecovery recoveryAuthorization = new AuthorizationServices().passwordRecovery(pass);
         return recoveryAuthorization != null?
                 ResponseEntity.ok(recoveryAuthorization):ResponseEntity.badRequest().build();
