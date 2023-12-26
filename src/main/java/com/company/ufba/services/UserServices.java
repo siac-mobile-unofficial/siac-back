@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -168,12 +169,6 @@ public class UserServices {
     }
 
     public Resource findPDF(Response response) {
-
-         String locale = local+response.getRole().name()+response.getCookies().get("JSESSIONID").split("\\.")[0]
-                 +"_"
-                 + LocalDate.now(ZoneId.systemDefault())
-                 +"_file.pdf";
-
         try {
             HttpCookie cookie = new HttpCookie("JSESSIONID",response.getCookies().get("JSESSIONID"));
             cookie.setPath("/");
@@ -184,10 +179,8 @@ public class UserServices {
             HttpRequest.Builder request = HttpRequest.newBuilder(new URI(selectPDF(response.getRole())));
             response.getHeaders().forEach(request::setHeader);
             HttpRequest req = request.build();
-            HttpResponse<Path> res = client.send(req, HttpResponse.BodyHandlers.ofFile(Path.of(locale)));
-        if (res.statusCode() == HttpStatus.OK.value())  return new UrlResource(Path.of(locale).toUri());
-        else new Delete(Path.of(locale));
-
+            HttpResponse<byte[]> res = client.send(req, HttpResponse.BodyHandlers.ofByteArray());
+        if (res.statusCode() == HttpStatus.OK.value())  return new ByteArrayResource( res.body());
         }catch (IOException | InterruptedException | URISyntaxException e){
             Logger.getLogger("PDF").info(e.getMessage());
         }
@@ -199,7 +192,6 @@ public class UserServices {
     }
 //    public Resource findPDFHistory(Response response){
 //
-//        String finalLocal = local+response.getCookies().get("JSESSIONID")+"_file.pdf";
 //        CookieManager CM = new CookieManager();
 //        HttpCookie cookie = new HttpCookie("JSESSIONID",response.getCookies().get("JSESSIONID"));
 //        cookie.setPath("/");
@@ -210,13 +202,10 @@ public class UserServices {
 //        HttpRequest.Builder request = HttpRequest.newBuilder(new URI(urlHistorySchool));
 //        response.getHeaders().forEach(request::setHeader);
 //        HttpRequest req = request.build();
-//        HttpResponse res = client.send(req, HttpResponse.BodyHandlers.ofFile(Path.of(finalLocal)));
+//        HttpResponse<byte[]> res = client.send(req, HttpResponse.BodyHandlers.ofByteArray());
 //        log.info(String.valueOf(res.statusCode()));
-//        if (res.statusCode() == HttpStatus.OK.value()) return new UrlResource(Path.of(finalLocal).toUri());
-//        else {
-//            Files.deleteIfExists(Path.of(finalLocal));
-//            log.info("DELETADO:"+finalLocal);
-//        };
+//        if (res.statusCode() == HttpStatus.OK.value()) return new ByteArrayResource(res.body());
+//
 //        return null;
 //        }catch (URISyntaxException | IOException | InterruptedException e){}
 //        return null;
