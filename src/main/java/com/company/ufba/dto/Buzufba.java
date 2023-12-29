@@ -1,15 +1,12 @@
 package com.company.ufba.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.HashMap;
-import java.util.Map;
-
-@Data @NoArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor
 public class Buzufba {
     private Type type;
-    private HashMap<String,?> locale;
+    private Object data;
 
 
 }
