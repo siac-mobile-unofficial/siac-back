@@ -2,12 +2,15 @@ package com.company.ufba.controller;
 
 
 import com.company.ufba.dto.Buzufba;
+import com.company.ufba.dto.Type;
 import com.company.ufba.services.ExtraServices;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -28,10 +31,13 @@ public class ExtraController implements WebSocketHandler {
 
         Buzufba buzufba = gson.fromJson(message.getPayload().toString(), Buzufba.class);
         System.out.println(buzufba.toString());
+        var data = (Map<String,?>) buzufba.getData();
         //TODO atualizar dados do cliente
         switch (buzufba.getType()) {
-            case BUS->{session.sendMessage(new TextMessage(gson.toJson(services.bus())));}
-            case POINT->{session.sendMessage(new TextMessage(gson.toJson(services.pointMaxRanger(buzufba))));}
+            case BUS->{ session.sendMessage(new TextMessage(gson.toJson(new Buzufba(Type.BUS,services.bus((String)data.get("name"))))));}
+            case POINT->{ session.sendMessage(new TextMessage(gson.toJson(new Buzufba(Type.POINT,services.pointMaxRanger(data)))));}
+            case ROUTER->{session.sendMessage(new TextMessage(gson.toJson(new Buzufba(Type.ROUTER,services.getRouter(((Double) data.get("id")).intValue())))));}
+
             default -> {}
         }
     }
@@ -43,7 +49,7 @@ public class ExtraController implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-
+        log.info("Sessão fechada: "+ session.getId());
     }
 
     @Override
