@@ -12,6 +12,7 @@ import com.company.ufba.utils.values.mapsValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -31,15 +32,16 @@ public class ExtraServices {
         return pointRepository.findById(1).get();
     }
 
-    public Set<PointEntity> pointMaxRanger(Buzufba infos) {
-        var values = infos.getLocale();
-        var lat = (double) values.get("lat");
-        var log = (double) values.get("long");
-        verifyZoom(mapsValues.valueOf((String) infos.getLocale().get("zoom")));
+    public Set<PointEntity> pointMaxRanger(Map<String,?> infos) {
+
+        var lat = (double) infos.get("lat");
+        var log = (double) infos.get("long");
+
+        verifyZoom(mapsValues.valueOf((String) infos.get("zoom")));
         var latExtraPlus = lat + zoom;
         var latExtraMinus = lat - zoom;
-        var longExtraPlus = log + zoom;
-        var longExtraMinus = log - zoom;
+        var longExtraPlus = log + (zoom+0.008);
+        var longExtraMinus = log - (zoom+0.008);
         var result = pointRepository
                 .findAllByLocale_LatitudeBetweenAndLocale_LongitudeBetween(latExtraMinus,
                         latExtraPlus, longExtraMinus, longExtraPlus);
@@ -51,17 +53,25 @@ public class ExtraServices {
         return routerRepository.findById(1).get();
     }
 
-    public BusEntity bus() {
-        return busRepository.findById(1).get();
+    public Set<BusEntity> bus(String name) {
+        System.out.println();
+        var result = busRepository.findBusEntitiesByPoint_Name(name);
+        return result;
     }
 
     public void verifyZoom(mapsValues zoom) {
         switch (zoom) {
-            case X1 -> this.zoom = 0.01;
-            case X2 -> this.zoom = 0.02;
-            case X3 -> this.zoom = 0.03;
+            case X1 -> this.zoom = 0.008;
+            case X2 -> this.zoom = 0.008;
+            case X3 -> this.zoom = 0.008;
         }
 
+    }
+
+    public Set<RouterEntity> getRouter(int id) {
+        var result = routerRepository.findAllById(id);
+        System.out.println(result);
+        return result;
     }
 }
 
