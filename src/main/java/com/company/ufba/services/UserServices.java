@@ -1,6 +1,7 @@
 package com.company.ufba.services;
 
 import com.company.ufba.dto.*;
+import com.company.ufba.utils.Exception.custom.RegisterException;
 import com.company.ufba.utils.tools.Delete;
 import com.company.ufba.utils.tools.Roles;
 import org.jsoup.Jsoup;
@@ -151,20 +152,20 @@ public class UserServices {
 
 
     }
-    public List<Classroom> findClassroom(Response response){
+    public List<Classroom> findClassroom(Response response)  {
         try {
             doc = Jsoup.connect(urlInfo)
                     .newRequest()
                     .cookies(response.getCookies())
                     .headers(response.getHeaders())
                     .get();
+                var element = doc.getElementsByClass("simple2").get(0).select("tbody").select("tr");
+                element.remove(element.last());
+                return (List<Classroom>) ListOfData(element);
+            }catch (IndexOutOfBoundsException | IOException e){
+            throw new RegisterException("Aluno sem inscrição semestral nos componentes curriculares.");
+            }
 
-            var element = doc.getElementsByClass("simple2").get(0).select("tbody").select("tr");
-            element.remove(element.last());
-          return (List<Classroom>) ListOfData(element);
-        } catch (IOException e) {
-            return null;
-        }
 
     }
 
