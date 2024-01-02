@@ -1,11 +1,13 @@
 package com.company.ufba.services;
 
 import com.company.ufba.buzufba.BusEntity;
+import com.company.ufba.buzufba.CoordinatesEntity;
 import com.company.ufba.buzufba.PointEntity;
 import com.company.ufba.buzufba.RouterEntity;
 import com.company.ufba.dto.Buzufba;
 import com.company.ufba.dto.Type;
 import com.company.ufba.repositories.BusRepository;
+import com.company.ufba.repositories.CoordinatesRepository;
 import com.company.ufba.repositories.PointRepository;
 import com.company.ufba.repositories.RouterRepository;
 import com.company.ufba.utils.values.mapsValues;
@@ -24,7 +26,8 @@ public class ExtraServices {
     RouterRepository routerRepository;
     @Autowired
     BusRepository busRepository;
-
+    @Autowired
+    CoordinatesRepository coordinatesRepository;
     Double zoom;
 
     public PointEntity point() {
@@ -68,8 +71,8 @@ public class ExtraServices {
 
     }
 
-    public Set<RouterEntity> getRouter(int id) {
-        var result = routerRepository.findAllById(id);
+    public Set<CoordinatesEntity> getRouter(int id) {
+        var result = coordinatesRepository.findAllByRouterId(id);
         System.out.println(result);
         return result;
     }
